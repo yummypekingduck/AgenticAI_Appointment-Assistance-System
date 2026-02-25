@@ -37,27 +37,7 @@ This repository provides a **CLI** that runs the system end-to-end and prints ve
 
 ## Project Structure
 
-Final Project/
-├─ main.py
-├─ web_app.py
-├─ requirements.txt
-├─ .env.example
-├─ src/
-│  └─ agent/
-│     ├─ __init__.py
-│     ├─ graph.py
-│     ├─ logging_utils.py
-│     ├─ middleware.py
-│     ├─ nodes.py
-│     └─ state.py
-├─ templates/
-│  ├─ index.html
-│  ├─ result.html
-│  └─ review.html
-├─ static/
-│  └─ nshealth-logo.png
-└─ tests/
-   └─ test_smoke.py
+<img width="368" height="537" alt="image" src="https://github.com/user-attachments/assets/849d593f-cb17-4b3c-b331-dadcb744ca59" />
 
 ## Setup
 
