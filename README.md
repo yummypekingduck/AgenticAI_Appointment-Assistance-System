@@ -38,26 +38,11 @@ The workflow is built using a LangGraph state machine with conditional routing:
 
 > `classify_intent → safety_check → info_check → handle_intent → draft → HITL → finalize`
 
-📌 **Flow Diagram**
-> Make sure this file exists in your repo (same folder as README): `image-1.png`
+ **Flow Diagram**
 
-<<<<<<< HEAD
-Final Project/
-├─ main.py # CLI entry point
-├─ web_app.py # FastAPI web interface
-├─ requirements.txt
-├─ .env.example
-├─ src/
-│ └─ agent/
-│ ├─ graph.py
-│ ├─ middleware.py
-│ ├─ nodes.py
-│ ├─ state.py
-│ └─ logging_utils.py
-├─ templates/ # Web UI pages
-├─ static/ # Logo and assets
-└─ tests/
-└─ test_smoke.py
+<img width="368" height="537" alt="image" src="https://github.com/user-attachments/assets/cd2f7f40-7c71-4485-9032-4163240ee662" />
+
+
 =======
 <img width="368" height="537" alt="image" src="https://github.com/user-attachments/assets/849d593f-cb17-4b3c-b331-dadcb744ca59" />
 
@@ -71,17 +56,7 @@ Final Project/
 pip install -r requirements.txt
 ```
 
-### 3) Environment variables
-Copy `.env.example` to `.env` and set values.
 
-```bash
-cp .env.example .env
-```
-
-**Important:** Do not commit secrets.
->>>>>>> a04a0a45de36fe4066f13f0e3c3e81f4ecb8d062
-
----
 
 ## Middleware Stack
 
