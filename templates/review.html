@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Review Draft</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img class="logo" src="/static/nshealth-logo.png" alt="NS Health Logo" />
+      <div>
+        <div class="brand-title">Maritime Health Medical Care</div>
+        <div class="brand-subtitle">Appointment Assistant</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h1>Human Review</h1>
+      <p class="muted">Approve the draft or edit it before sending to the patient.</p>
+
+      <div class="chips">
+        {% if masked_appt %}<span class="chip">Appointment: {{ masked_appt }}</span>{% endif %}
+        {% if masked_ins %}<span class="chip">Insurance: {{ masked_ins }}</span>{% endif %}
+      </div>
+
+      <div class="panel">
+        <div class="panel-label">Draft response</div>
+        <div class="panel-text">{{ state.draft_response }}</div>
+      </div>
+
+      <form method="post" action="/review" class="form">
+        <input type="hidden" name="run_id" value="{{ state.run_id }}" />
+
+        <div class="grid">
+          <button class="btn primary" type="submit" name="action" value="approve">Approve</button>
+          <button class="btn" type="submit" name="action" value="edit">Submit Edit</button>
+        </div>
+
+        <div class="field">
+          <label>Edit text (optional)</label>
+          <textarea name="edited_text" rows="5" placeholder="Type edits here..."></textarea>
+        </div>
+      </form>
+
+      <div class="meta">
+        <div><strong>run_id:</strong> {{ state.run_id }}</div>
+        <div><strong>route_trace:</strong> {{ " -> ".join(state.route_trace) }}</div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

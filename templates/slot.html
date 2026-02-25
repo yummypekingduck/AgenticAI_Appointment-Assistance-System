@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Reschedule Availability</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="topbar" role="banner">
+    <div class="brand">
+      <img class="logo" src="/static/nshealth-logo.png" alt="Maritime Health Medical Care logo" />
+      <div>
+        <div class="brand-title">Maritime Health Medical Care</div>
+        <div class="brand-subtitle">Appointment Assistant</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" role="main">
+    <section class="card" aria-labelledby="checkTitle">
+      <h1 id="checkTitle">Checking availability</h1>
+
+      <p class="muted" role="status" aria-live="polite">
+        Please wait while I check if the requested time slot is available
+        <span class="dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span>
+      </p>
+
+      <div class="chips" aria-label="Patient identifiers">
+        <span class="chip">Appointment: {{ masked_appt }}</span>
+        <span class="chip">Insurance: {{ masked_ins }}</span>
+      </div>
+
+      <div class="panel" aria-label="Availability result">
+        <div class="panel-label">Result</div>
+        <div class="panel-text">
+          The requested time ({{ requested }}) is not available.
+          Would you like to reschedule to <strong>{{ alternative }}</strong> instead?
+        </div>
+      </div>
+
+      <form method="post" action="/slot" class="row" aria-label="Alternative slot decision">
+        <input type="hidden" name="run_id" value="{{ state.run_id }}" />
+        <button class="btn primary" type="submit" name="accept" value="yes" aria-label="Yes, accept the alternative time">Yes</button>
+        <button class="btn" type="submit" name="accept" value="no" aria-label="No, decline the alternative time">No</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

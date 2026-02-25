@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>All Set</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="topbar" role="banner">
+    <div class="brand">
+      <img class="logo" src="/static/nshealth-logo.png" alt="Maritime Health Medical Care logo" />
+      <div>
+        <div class="brand-title">Maritime Health Medical Care</div>
+        <div class="brand-subtitle">Appointment Assistant</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" role="main">
+    <section class="card">
+      <h1>All set</h1>
+      <p class="muted">
+        Thank you. Please take a good rest and wish you a smooth and pleasant medical check experience.
+      </p>
+
+      <div class="chips">
+        {% if masked_appt %}<span class="chip">Appointment: {{ masked_appt }}</span>{% endif %}
+        {% if masked_ins %}<span class="chip">Insurance: {{ masked_ins }}</span>{% endif %}
+      </div>
+
+      <a class="btn primary" href="/">Start a new request</a>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Confirm Request</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img class="logo" src="/static/nshealth-logo.png" alt="Maritime Health Medical Care Logo" />
+      <div>
+        <div class="brand-title">Maritime Health Medical Care</div>
+        <div class="brand-subtitle">Appointment Assistant</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h1>Confirm your request</h1>
+      <p class="muted">Please confirm the details before we proceed.</p>
+
+      <div class="chips">
+        <span class="chip">Appointment: {{ masked_appt }}</span>
+        <span class="chip">Insurance: {{ masked_ins }}</span>
+      </div>
+
+      <div class="panel">
+        <div class="panel-label">Request</div>
+        <div class="panel-text">“{{ user_input }}”</div>
+      </div>
+
+      <form method="post" action="/confirm" class="row">
+        <input type="hidden" name="run_id" value="{{ run_id }}" />
+        <button class="btn primary" type="submit" name="proceed" value="yes">Yes, proceed</button>
+        <button class="btn" type="submit" name="proceed" value="no">No, edit my request</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NS Health Appointment Assistant</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="topbar" role="banner">
+    <div class="brand" aria-label="Maritime Health Medical Care Appointment Assistant">
+      <img class="logo" src="/static/nshealth-logo.png" alt="Maritime Health Medical Care logo" />
+      <div>
+        <div class="brand-title">Maritime Health Medical Care</div>
+        <div class="brand-subtitle">Appointment Assistant</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" role="main">
+    <section class="card" aria-labelledby="startTitle">
+      <h1 id="startTitle">Start your request</h1>
+      <p class="muted" id="helpText">
+        Please enter your appointment details first. Your request will be confirmed before processing.
+      </p>
+
+      {% if error %}
+        <div class="alert" role="alert">{{ error }}</div>
+      {% endif %}
+
+      <form method="post" action="/intake" class="form" aria-describedby="helpText">
+        <div class="grid">
+          <div class="field">
+            <label for="appointment_id">Appointment ID</label>
+            <input id="appointment_id" name="appointment_id" placeholder="e.g., 1234 or A-9988"
+                   value="{{ appointment_id or '' }}" required />
+          </div>
+          <div class="field">
+            <label for="insurance_id">Insurance Card Number</label>
+            <input id="insurance_id" name="insurance_id" placeholder="e.g., NS Health Card #"
+                   value="{{ insurance_id or '' }}" required />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="user_input">Your request</label>
+          <textarea id="user_input" name="user_input" rows="4"
+                    placeholder="e.g., Reschedule my appointment to next Tuesday at 2pm"
+                    required>{{ user_input or '' }}</textarea>
+        </div>
+
+        <button class="btn primary" type="submit">Continue</button>
+      </form>
+    </section>
+
+    <section class="card subtle" aria-labelledby="exampleTitle">
+      <h2 id="exampleTitle">Examples</h2>
+      <ul class="list">
+        <li>“Cancel my appointment.”</li>
+        <li>“Reschedule my appointment to next Tuesday at 2pm.”</li>
+        <li>“What preparation do I need for my MRI?”</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

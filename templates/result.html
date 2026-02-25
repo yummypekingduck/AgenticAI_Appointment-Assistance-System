@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Result</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="topbar" role="banner">
+    <div class="brand" aria-label="Maritime Health Medical Care Appointment Assistant">
+      <img class="logo" src="/static/nshealth-logo.png" alt="Maritime Health Medical Care logo" />
+      <div>
+        <div class="brand-title">Maritime Health Medical Care</div>
+        <div class="brand-subtitle">Appointment Assistant</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" role="main">
+    <section class="card" aria-labelledby="resultTitle">
+      <h1 id="resultTitle">Result</h1>
+
+      <div class="chips" aria-label="Run summary">
+        {% if masked_appt %}<span class="chip">Appointment: {{ masked_appt }}</span>{% endif %}
+        {% if masked_ins %}<span class="chip">Insurance: {{ masked_ins }}</span>{% endif %}
+        <span class="chip strong">Status: {{ state.terminal_status }}</span>
+      </div>
+
+      {% if state.terminal_status == "READY" %}
+        <div class="status success" role="status" aria-live="polite">
+          <span class="icon" aria-hidden="true">
+            <!-- check circle -->
+            <svg viewBox="0 0 24 24" width="18" height="18" focusable="false" aria-hidden="true">
+              <path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20Zm-1 14-4-4 1.4-1.4L11 13.2l5.6-5.6L18 9l-7 7Z"></path>
+            </svg>
+          </span>
+          <div>
+            <div class="status-title">Completed</div>
+            <div class="status-text">Your request has been processed.</div>
+          </div>
+        </div>
+      {% elif state.terminal_status == "ESCALATE" %}
+        <div class="status danger" role="alert" aria-live="assertive">
+          <span class="icon" aria-hidden="true">
+            <!-- warning -->
+            <svg viewBox="0 0 24 24" width="18" height="18" focusable="false" aria-hidden="true">
+              <path d="M12 2 1 21h22L12 2Zm0 7h1v6h-2V9h1Zm0 10a1.5 1.5 0 1 1 0-3a1.5 1.5 0 0 1 0 3Z"></path>
+            </svg>
+          </span>
+          <div>
+            <div class="status-title">Urgent</div>
+            <div class="status-text">Please read the message below carefully.</div>
+          </div>
+        </div>
+      {% else %}
+        <div class="status info" role="status" aria-live="polite">
+          <span class="icon" aria-hidden="true">
+            <!-- info -->
+            <svg viewBox="0 0 24 24" width="18" height="18" focusable="false" aria-hidden="true">
+              <path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20Zm1 15h-2v-6h2v6Zm0-8h-2V7h2v2Z"></path>
+            </svg>
+          </span>
+          <div>
+            <div class="status-title">More information needed</div>
+            <div class="status-text">Please review the message below.</div>
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="panel" aria-label="Final response">
+        <div class="panel-label">Final response</div>
+        <div class="panel-text">{{ state.final_response }}</div>
+      </div>
+
+      {% if state.intent == "PREP_INFO" and state.terminal_status == "READY" %}
+        <div class="card subtle" style="margin-top:14px;" aria-labelledby="followTitle">
+          <h2 id="followTitle">Do you have another request?</h2>
+          <p class="muted">Please take a good rest and wish you a smooth and pleasant medical check experience.</p>
+
+          <form method="post" action="/followup" class="row" aria-label="Follow-up question">
+            <input type="hidden" name="appointment_id" value="{{ state.meta.appointment_id if state.meta else '' }}">
+            <input type="hidden" name="insurance_id" value="{{ state.meta.insurance_id if state.meta else '' }}">
+            <button class="btn primary" type="submit" name="answer" value="yes" aria-label="Yes, I have another request">Yes</button>
+            <button class="btn" type="submit" name="answer" value="no" aria-label="No, I am done">No</button>
+          </form>
+        </div>
+      {% else %}
+        <a class="btn" href="/" aria-label="Start another request">Start another request</a>
+      {% endif %}
+
+      <details class="details">
+        <summary>Execution evidence</summary>
+        <div class="meta">
+          <div><strong>run_id:</strong> {{ state.run_id }}</div>
+          <div><strong>intent:</strong> {{ state.intent }}</div>
+          <div><strong>route_trace:</strong> {{ " -> ".join(state.route_trace) }}</div>
+          {% if state.missing_info %}
+            <div><strong>missing_info:</strong> {{ state.missing_info }}</div>
+          {% endif %}
+        </div>
+      </details>
+    </section>
+  </main>
+</body>
+</html>
