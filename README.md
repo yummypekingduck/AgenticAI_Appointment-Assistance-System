@@ -41,6 +41,7 @@ The workflow is built using a LangGraph state machine with conditional routing:
 📌 **Flow Diagram**
 > Make sure this file exists in your repo (same folder as README): `image-1.png`
 
+<<<<<<< HEAD
 Final Project/
 ├─ main.py # CLI entry point
 ├─ web_app.py # FastAPI web interface
@@ -57,6 +58,28 @@ Final Project/
 ├─ static/ # Logo and assets
 └─ tests/
 └─ test_smoke.py
+=======
+<img width="368" height="537" alt="image" src="https://github.com/user-attachments/assets/849d593f-cb17-4b3c-b331-dadcb744ca59" />
+
+## Setup
+
+### 1) Python
+- Python **3.10+** recommended (3.11 works well)
+
+### 2) Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 3) Environment variables
+Copy `.env.example` to `.env` and set values.
+
+```bash
+cp .env.example .env
+```
+
+**Important:** Do not commit secrets.
+>>>>>>> a04a0a45de36fe4066f13f0e3c3e81f4ecb8d062
 
 ---
 
