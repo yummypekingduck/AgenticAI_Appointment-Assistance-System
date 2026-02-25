@@ -1,216 +1,182 @@
-# Agentic Appointment Assistant (LangGraph + Middleware + HITL)
+# Maritime Health Medical Care  
+## Agentic Appointment Assistant  
+**MBAN 5510 – Agentic AI Final Project**
 
-MBAN 5510 Final Project — Appointment-assistance system demonstrating **middleware-driven orchestration** using **LangGraph** with **safety controls** and a **Human-in-the-Loop (HITL)** review stage.
+An Agentic AI healthcare appointment assistant built with **LangGraph** demonstrating:
 
-This repository provides a **CLI** that runs the system end-to-end and prints verifiable execution evidence:
-- unique run id
-- terminal status (closed set)
-- route/path taken
-- final client-facing response (after HITL)
-
----
-
-## Features (Meets Minimum Requirements)
-
-### Supported request types
-- **Reschedule** an appointment
-- **Cancel** an appointment
-- **Request preparation instructions** (e.g., imaging prep)
-
-### Safety & governance
-- Risk-triggered escalation (e.g., emergency keywords) routes to **ESCALATE**
-- PII masking in logs (simple patterns; extend as needed)
-- Retry + call limits for model/tool calls (lightweight middleware)
-- HITL: draft → human approve/edit → final output
-
-### Required interface and outputs
-- CLI entry point: `python main.py`
-- Each run prints:
-  - `run_id`
-  - `terminal_status`: `READY | NEED_INFO | ESCALATE`
-  - `route_trace`: concise node/route list
-  - `final_response`
-
-> Constraint: This system does **not** provide clinical advice. Emergency/risk cases instruct the user to seek immediate care.
+- Middleware-driven orchestration
+- Risk-aware escalation logic
+- Human-in-the-Loop (HITL) approval
+- CLI + Web UI execution
+- Transparent execution trace
+- Safety and PII masking controls
 
 ---
 
-## Project Structure
+## Project Objective
+
+Design and implement an **agentic workflow system** capable of handling healthcare appointment requests while enforcing:
+
+- Structured state transitions (LangGraph state machine)
+- Safety escalation rules
+- Human review checkpoints
+- Verifiable execution evidence
+
+---
+
+## Supported Patient Intents
+
+1. **Reschedule an appointment**
+2. **Cancel an appointment**
+3. **Request preparation instructions** (e.g., imaging / MRI prep)
+
+---
+
+## Agent Architecture
+
+The workflow is built using a LangGraph state machine with conditional routing:
+
+> `classify_intent → safety_check → info_check → handle_intent → draft → HITL → finalize`
+
+📌 **Flow Diagram**
+> Make sure this file exists in your repo (same folder as README): `image-1.png`
 
 Final Project/
-├─ main.py
-├─ web_app.py
+├─ main.py # CLI entry point
+├─ web_app.py # FastAPI web interface
 ├─ requirements.txt
 ├─ .env.example
 ├─ src/
-│  └─ agent/
-│     ├─ __init__.py
-│     ├─ graph.py
-│     ├─ logging_utils.py
-│     ├─ middleware.py
-│     ├─ nodes.py
-│     └─ state.py
-├─ templates/
-│  ├─ index.html
-│  ├─ result.html
-│  └─ review.html
-├─ static/
-│  └─ nshealth-logo.png
+│ └─ agent/
+│ ├─ graph.py
+│ ├─ middleware.py
+│ ├─ nodes.py
+│ ├─ state.py
+│ └─ logging_utils.py
+├─ templates/ # Web UI pages
+├─ static/ # Logo and assets
 └─ tests/
-   └─ test_smoke.py
-
-## Setup
-
-### 1) Python
-- Python **3.10+** recommended (3.11 works well)
-
-### 2) Install dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 3) Environment variables
-Copy `.env.example` to `.env` and set values.
-
-```bash
-cp .env.example .env
-```
-
-**Important:** Do not commit secrets.
+└─ test_smoke.py
 
 ---
 
-## Running the CLI (End-to-End)
+## Middleware Stack
+
+Each node is wrapped with:
+
+- **Call limit enforcement** (prevents runaway loops)
+- **Retry logic** (handles transient failures)
+- **PII masking logger** (prevents leaking identifiers in logs)
+
+---
+
+## Safety & Governance
+
+- Emergency keyword detection (e.g., “chest pain”) routes to **ESCALATE**
+- Closed terminal states:
+  - `READY`
+  - `NEED_INFO`
+  - `ESCALATE`
+- Human approval/edit before final client-facing response
+- Full execution trace stored in `route_trace`
+
+---
+
+## CLI Usage
+
+Run end-to-end in terminal:
 
 ```bash
 python main.py
-```
 
-You’ll be prompted for a user request and then (when applicable) a HITL review decision.
+## CLI Outputs (required evidence):
 
-### Example: normal reschedule
-Input:
-```
-Reschedule my appointment ID 1234 to next Tuesday at 2pm
-```
+run_id
+terminal_status
+route_trace
+final_response
 
-Output (example):
-- Terminal status: `READY`
-- Route trace: `START -> classify_intent -> safety_check -> info_check -> handle_intent -> draft -> hitl -> finalize -> END`
-- Final response: confirmed reschedule message
+Web UI Usage
+Start the server:
+uvicorn web_app:app --reload --port 8010
 
-### Example: escalation scenario
-Input:
-```
-I have chest pain and need to cancel my appointment
-```
+Open in browser:
 
-Output:
-- Terminal status: `ESCALATE`
-- Route trace indicates escalation path
-- Final response directs immediate emergency services
+http://127.0.0.1:8010
 
-### Example: need-info scenario
-Input:
-```
-Cancel my appointment
-```
+Web flow includes:
 
-Output:
-- Terminal status: `NEED_INFO`
-- Final response requests missing appointment identifier
+Appointment ID intake
+
+Insurance card intake
+
+Request confirmation (Yes/No)
+
+Slot availability simulation (reschedule)
+
+Human-in-the-Loop review (prep instructions)
+
+Interactive follow-up dialog (Yes → back to intake)
+
+Example Scenarios
+1 Reschedule
+
+If time available → Success
+
+If unavailable → suggest an alternative time slot
+
+User accepts/declines → run completes
+
+2 Cancel
+
+Confirmation → immediate success message:
+
+“Your appointment has been cancelled successfully… please book if needed.”
+
+3 Preparation Instructions
+
+Draft generated → HITL approve/edit
+
+Follow-up message:
+
+“Do you have any other request? Please take a good rest…”
+
+Technologies Used
+
+Python 3.11+
+
+FastAPI
+
+LangGraph
+
+Pydantic
+
+Jinja2
+
+Middleware pattern
+
+State machine orchestration
+
+Execution Evidence Example
+run_id: 2024-04-15T19:20:10Z_a1b2c3d4
+terminal_status: READY
+route_trace: classify_intent → safety_ok → info_complete → handle_intent → draft_generated → hitl_approve → finalize
+
+Future Improvements
+
+Replace rule-based intent classifier with an LLM router
+
+Connect to a real scheduling API / database
+
+Add authentication layer
+
+Persistent state storage (Redis/SQLite)
+
+Docker containerization
+
 
 ---
 
-## How Human Review Works (HITL)
 
-When the workflow produces a `draft_response`, it enters a **HITL** stage:
-1. The draft is shown to the reviewer in the CLI
-2. Reviewer chooses:
-   - **Approve**: accept draft as final
-   - **Edit**: provide replacement final text
-3. The final output is stored in state as `final_response` and the run terminates with `READY`.
 
 ---
-
-## Architecture & Design Decisions (High-Level)
-
-### Middleware-driven orchestration
-This project intentionally separates:
-- **Workflow logic** (LangGraph nodes and routing)
-- **Cross-cutting concerns** (middleware), applied uniformly across nodes:
-  - PII masking in logs
-  - call limits
-  - retries
-  - safety gating
-  - HITL
-
-Nodes are wrapped with a middleware pipeline in `src/agent/middleware.py` and assembled into a LangGraph state machine in `src/agent/graph.py`.
-
-### Stateful workflow
-A single `AppointmentState` object flows through the graph and accumulates:
-- `intent`
-- `missing_info`
-- `draft_response` / `final_response`
-- `terminal_status`
-- `route_trace`
-- `run_id`
-
-State makes routing decisions transparent and produces verifiable evidence.
-
-### Safety strategy
-A safety node performs a lightweight risk check using keywords (configurable). If triggered:
-- workflow sets `terminal_status=ESCALATE`
-- generates an emergency-safe message
-- short-circuits normal operations
-
-This ensures risk cases do not proceed as normal.
-
----
-
-## Tests
-
-A minimal smoke test validates the graph compiles and can run a simple scenario.
-
-```bash
-pytest -q
-```
-
----
-
-## Demo (LinkedIn)
-Add your LinkedIn demo URL here before submission:
-- **LinkedIn demo:** <PASTE_LINK_HERE>
-
-Your demo should show:
-1) a normal scenario (reschedule/cancel/prep)
-2) an escalation scenario
-3) HITL approve/edit behavior
-
----
-
-## Notes for Extension
-- Replace the rule-based intent classifier with an LLM router.
-- Add appointment “database” adapters (CSV/SQLite) using tool nodes.
-- Expand PII masking patterns and safety checks.
-- Add a lightweight web UI (optional).
-
-
-
-## Web UI (Optional)
-
-A minimal web interface is included to demo the same workflow with a browser-based Human-in-the-Loop review.
-
-### Run the web server
-```bash
-pip install -r requirements.txt
-uvicorn web_app:app --reload --port 8000
-```
-
-Then open:
-- http://127.0.0.1:8000
-
-### What the web UI demonstrates
-- Normal request -> draft generated -> reviewer approve/edit -> READY + final response
-- Risk request -> ESCALATE (ends early, no HITL)
-- Missing info -> NEED_INFO (ends early, no HITL)
